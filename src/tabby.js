@@ -17,6 +17,10 @@ export class Tabby {
    * @param {Number} index
    */
   doSwitch(index) {
+    if (this.dontUpdate(index)) {
+      return;
+    }
+
     const prevContent = this.items[this.index][1];
     const nextContent = this.items[index][1];
 
@@ -45,35 +49,27 @@ export class Tabby {
    * switch to the next element
    */
   next() {
-    const newIndex = this.index + 1;
-
-    if (this.isOutRange(newIndex)) {
-      return;
-    }
-
-    this.doSwitch(newIndex);
+    this.doSwitch((this.index + 1));
   }
 
   /**
    * switch to the previous element
    */
   previous() {
-    const newIndex = this.index - 1;
-
-    if (this.isOutRange(newIndex)) {
-      return;
-    }
-
-    this.doSwitch(newIndex);
+    this.doSwitch((this.index - 1));
   }
 
   /**
-   * checks if a given index is out of range
+   * checks if a given index should not trigger an update
    * @param {Number} index
    * @return {Boolean}
    */
-  isOutRange(index) {
-    return index < 0 || (index > (this.items.length - 1));
+  dontUpdate(index) {
+    return (
+      index < 0
+      || (index > (this.items.length - 1))
+      || index === this.index
+    );
   }
 
   /**
@@ -104,12 +100,11 @@ export class Tabby {
       const partner = content.filter(item => item.getAttribute(ATTRIBUTE_CONTENT) === attr)[0];
 
       if (index === 0) {
-        partner.style.display = 'block';
+        show(partner);
         partner.style.opacity = '1';
         bar.setAttribute(ATTRIBUTE_ACTIVE, '');
       } else {
-        partner.style.display = 'none';
-
+        hide(partner);
         if (this.animation) {
           partner.style.opacity = '0';
         }
