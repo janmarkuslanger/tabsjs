@@ -13,7 +13,6 @@ export const getSiblings = (element) => {
 
   while (nextElement) {
     arrayContainer.push(nextElement);
-
     nextElement = nextElement.nextElementSibling;
   }
 
